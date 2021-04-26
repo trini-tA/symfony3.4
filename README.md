@@ -1,6 +1,14 @@
 Symfony 3.4
 
+# Database
+php bin/console doctrine:database:create
 
+php bin/console doctrine:generate:entity
+  php bin/console doctrine:schema:validate
+  php bin/console doctrine:schema:update --force
+
+# Twig
+{{ dump(todos) }}
 
 
 
