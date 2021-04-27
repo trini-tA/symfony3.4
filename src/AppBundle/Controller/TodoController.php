@@ -38,15 +38,19 @@ class TodoController extends Controller{
     public function export(Request $request){
         
         $repository = $this->getDoctrine()->getRepository(Todo::class);
-        $todos = $repository->orderBy( 'updatedAt', 'ASC' );
+        $todos = $repository->orderBy( 'updatedAt', 'ASC', 'array' );
 
+
+        /*
+        // First solution
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
-
-        //dump( $serializer->serialize( $todos, 'json') );
         return new Response( $serializer->serialize( $todos, 'json') );
+        */
 
+       
+        return new JsonResponse( $todos );
     }
 
     /**

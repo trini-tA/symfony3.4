@@ -10,11 +10,15 @@ namespace AppBundle\Repository;
  */
 class TodoRepository extends \Doctrine\ORM\EntityRepository {
     
-    public function orderBy( $order = 'title', $direction = 'ASC' ){
+    public function orderBy( $order = 'title', $direction = 'ASC', $returnType = 'entity' ){
         $todos = $this->getEntityManager()
-            ->createQuery( 'SELECT todo FROM AppBundle\Entity\Todo todo ORDER BY todo.' . $order . ' ' . $direction  )
-            ->getResult();
+            ->createQuery( 'SELECT todo FROM AppBundle\Entity\Todo todo ORDER BY todo.' . $order . ' ' . $direction  );
 
-        return $todos;
+        if( $returnType == 'array' ){
+            return $todos->getArrayResult();
+        }
+
+        return $todos->getResult();
     }
+
 }
