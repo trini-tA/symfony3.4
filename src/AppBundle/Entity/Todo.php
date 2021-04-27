@@ -38,27 +38,31 @@ class Todo
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable = true, options={"default" : "CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="created_at", type="datetime", options={"default" : "CURRENT_TIMESTAMP"})
      */
     private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updated_at", type="datetime", nullable = true, options={"default" : "CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="updated_at", type="datetime", options={"default" : "CURRENT_TIMESTAMP"})
      */
     private $updatedAt;
 
-    /**
-     * Gets triggered every time on update
+    public function __construct(){
+        $this->updatedAt = new \DateTime("now");
+        if( !$this->createdAt ){
+            $this->createdAt = new \DateTime("now");
+        }
+    }
 
+    /**
      * @ORM\PreUpdate
      */
-    public function onPreUpdate()
-    {
-        $this->updated = new \DateTime("now");
+    public function updatedAtPreUpdate() {
+        $this->updatedAt = new \DateTime("now");
     }
-    
+
     /**
      * Get id.
      *
@@ -151,7 +155,6 @@ class Todo
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
-
         return $this;
     }
 
