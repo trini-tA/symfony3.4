@@ -24,7 +24,7 @@ class TodoController extends Controller{
     public function index(Request $request){
         
         $repository = $this->getDoctrine()->getRepository(Todo::class);
-        $todos = $repository->findAll();
+        $todos = $repository->orderBy( 'updatedAt', 'ASC' );
 
         return $this->render('default/todo/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
@@ -38,7 +38,7 @@ class TodoController extends Controller{
     public function export(Request $request){
         
         $repository = $this->getDoctrine()->getRepository(Todo::class);
-        $todos = $repository->findAll();
+        $todos = $repository->orderBy( 'updatedAt', 'ASC' );
 
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
