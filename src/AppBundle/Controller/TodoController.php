@@ -8,6 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 use AppBundle\Form\TodoType;
 use AppBundle\Entity\Todo;
@@ -26,6 +30,23 @@ class TodoController extends Controller{
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
             'todos' => $todos,
         ]);
+    }
+
+    /**
+     * @Route("/export", name="todo.export")
+     */
+    public function export(Request $request){
+        
+        $repository = $this->getDoctrine()->getRepository(Todo::class);
+        $todos = $repository->findAll();
+
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+        //dump( $serializer->serialize( $todos, 'json') );
+        return new Response( $serializer->serialize( $todos, 'json') );
+
     }
 
     /**
@@ -76,6 +97,7 @@ class TodoController extends Controller{
         $form = $this->createForm(TodoType::class, $todo );
 
         $form
+            // no :( ->setMethod('PUT')
             ->add( 'edit',  SubmitType::class, [
                'label' => 'Save edit todo'
             ]);
@@ -102,6 +124,36 @@ class TodoController extends Controller{
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
             'form_todo' => $form->createView(),
         ]);
+    }
+
+
+     /**
+     * @Route("/todo/delete/{id}", name="todo.delete")
+     */
+    public function delete(Request $request, $id ){
+        $repository = $this->getDoctrine()->getRepository(Todo::class);
+        $todo = $repository->find( $id );
+        
+        if( $todo ){
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove( $todo );
+            $entityManager->flush();
+
+            $session = $request->getSession();
+            $session->getFlashBag()->add( 'success', 'Todo deleted with success !!!');
+            $session->set( 'statut', 'success' );
+
+            return $this->redirect( $this->generateUrl('todo.list'));
+
+            //return new JsonResponse( $request->request->all() );
+        }
+
+        $session = $request->getSession();
+        $session->getFlashBag()->add( 'danger', 'Error:: can not delete todo !!!');
+        $session->set( 'statut', 'danger' );
+        return $this->redirect( $this->generateUrl('todo.list'));
+
     }
 
     /**

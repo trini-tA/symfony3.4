@@ -24,9 +24,16 @@ class Todo
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255)
+     * @ORM\Column(name="title", type="string", length=255, nullable = true)
      */
     private $title;
+
+    /**
+     * @var text
+     *
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
 
     /**
      * @var \DateTime
@@ -42,7 +49,16 @@ class Todo
      */
     private $updatedAt;
 
+    /**
+     * Gets triggered every time on update
 
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updated = new \DateTime("now");
+    }
+    
     /**
      * Get id.
      *
@@ -75,6 +91,30 @@ class Todo
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set description.
+     *
+     * @param text $description
+     *
+     * @return Todo
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description.
+     *
+     * @return text
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**

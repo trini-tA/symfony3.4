@@ -3,6 +3,9 @@
 {% block body %}
 
     <div class="container">
+
+        {% include "default/includes/flash-messages.html.twig" %}
+
         {{ form(form_todo) }}
     </div>
 
