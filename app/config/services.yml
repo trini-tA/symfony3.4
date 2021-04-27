@@ -33,3 +33,6 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    AppBundle\Service\TodoService:
+        tags:
+        - { name: doctrine.event_listener, event: onFlush }

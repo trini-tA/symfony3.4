@@ -59,7 +59,9 @@ class Todo
     /**
      * @ORM\PreUpdate
      */
-    public function updatedAtPreUpdate() {
+    public function preUpdate() {
+
+        // not working why ???
         $this->updatedAt = new \DateTime("now");
     }
 
