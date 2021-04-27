@@ -42,7 +42,7 @@ class TodoController extends Controller{
 
 
         /*
-        // First solution
+        // First solution :(
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
@@ -138,7 +138,7 @@ class TodoController extends Controller{
         $repository = $this->getDoctrine()->getRepository(Todo::class);
         $todo = $repository->find( $id );
         
-        if( $todo ){
+        if( $todo && $request->isMethod( 'delete' ) ){
             
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove( $todo );
